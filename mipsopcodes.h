@@ -63,4 +63,8 @@
 #define FUNCT_SUB 0x22
 #define FUNCT_SUBU 0x23
 
+//For use in the virtual CPU
+#define HALT 0x1a
+#define PRINT 0x1b
+
 #endif // MIPS_H
