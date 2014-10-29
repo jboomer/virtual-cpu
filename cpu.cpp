@@ -6,7 +6,6 @@ CPU::CPU(RAM *mem) : instr_addr(0xff), addr_ceil(0xfe){
 		memory = mem;
 		m_halt = true;
         pc = 0;
-
 	}
 	
 	CPU::~CPU(){

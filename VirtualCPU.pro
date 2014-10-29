@@ -20,6 +20,7 @@ SOURCES += main.cpp\
 HEADERS  += virtualcpu.h \
     opcodes.h \
     memory.h \
-    cpu.h
+    cpu.h \
+    mips.h
 
 FORMS    += virtualcpu.ui

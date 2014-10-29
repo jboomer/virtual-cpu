@@ -1,4 +1,5 @@
 //TODO: File input method for executing binary files
+//TODO: MIPS Instructions maken
 
 
 #include <vector>
@@ -21,9 +22,9 @@ VirtualCPU::VirtualCPU(QWidget *parent) :
     myRAM = new RAM();
     v_cpu = new CPU(myRAM);
 
-    QObject::connect(v_cpu, SIGNAL(output(int)),this, SLOT(on_cpuOutput(int)));
+    QObject::connect(v_cpu, SIGNAL(output(int)),this, SLOT(receive_cpuOutput(int)));
     QObject::connect(this, SIGNAL(newOutput(int)), ui->lcdNumber, SLOT(display(int)));
-    QObject::connect(v_cpu, SIGNAL(process_cmd(int)), this, SLOT(on_cpuCmd(int)));
+    QObject::connect(v_cpu, SIGNAL(process_cmd(int)), this, SLOT(receive_cpuCmd(int)));
     QObject::connect(this, SIGNAL(newCmd(QString)), ui->textBrowser, SLOT(append(QString)));
 
     /* Test program */
@@ -60,12 +61,12 @@ void VirtualCPU::on_runButton_clicked()
     runProgram();
 }
 
-void VirtualCPU::on_cpuOutput(int output)
+void VirtualCPU::receive_cpuOutput(int output)
 {
     emit newOutput(output);
 }
 
-void VirtualCPU::on_cpuCmd(int opcode)
+void VirtualCPU::receive_cpuCmd(int opcode)
 {
     switch(opcode & 0xff){
         case(HALT) : {

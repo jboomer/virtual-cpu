@@ -1,5 +1,6 @@
 # C++ objects and libs
 
+VirtualCPU
 *.slo
 *.lo
 *.o

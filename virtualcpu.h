@@ -30,8 +30,8 @@ signals:
 
 private slots:
     void on_runButton_clicked();
-    void on_cpuOutput(int output);
-    void on_cpuCmd(int opcode);
+    void receive_cpuOutput(int output);
+    void receive_cpuCmd(int opcode);
 private:
     Ui::VirtualCPU *ui;
 };
