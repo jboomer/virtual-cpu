@@ -20,21 +20,43 @@ namespace vCPU{
             // General purpose registers
             uint32_t *regs;
 
-            //Special registers
+            // Hidden registers
             uint32_t pc; //Program counter
             uint32_t npc; //Next program counter
             uint32_t ir; //Instruction register
             uint32_t hi; //HIGH register
             uint32_t lo; //LOW register
 
+            uint32_t ALUSrcA;
+            uint32_t ALUSrcB;
+            uint8_t ALUOp;
 
-            //Flags
+            // Flags
             bool m_halt;
             bool m_overflow;
             bool m_underflow;
 
+            // Instruction pipeline
             void fetch();
-            void decode(const uint32_t& instr);
+            void decode();
+            void execute();
+            void mem_acces();
+            void mem_writeback();
+
+            // Actions
+
+
+            // Helper functions
+            int opCode();
+            int r_rs();
+            int r_rt();
+            int r_rd();
+            int r_shamt();
+            int r_func();
+            int i_rs();
+            int i_rt();
+            int i_imm();
+            int j_addr();
 
         public:
             MIPSproc(RAM *mem);

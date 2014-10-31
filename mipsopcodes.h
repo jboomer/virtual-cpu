@@ -1,5 +1,5 @@
-#ifndef MIPS_H
-#define MIPS_H
+#ifndef MIPSOPCODES_H
+#define MIPSOPCODES_H
 
 //Shift positions
 #define OP 26
@@ -10,8 +10,8 @@
 #define R_SHAMT 6
 #define R_FUNC 0
 
-#define I_RD 21
-#define I_RS 16
+#define I_RS 21
+#define I_RT 16
 #define I_IMM 0
 
 #define J_ADDR 0
@@ -67,4 +67,4 @@
 #define HALT 0x1a
 #define PRINT 0x1b
 
-#endif // MIPS_H
+#endif // MIPSOPCODES_H

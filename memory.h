@@ -10,16 +10,16 @@ namespace vCPU{
      */
     class Memory{
 		protected:
-        uint32_t *m_memspace;
+        uint8_t *m_memspace;
 		public:
 	    Memory();
 	    ~Memory();
-            const uint32_t& read(uint8_t pos);
+            const uint8_t& read(uint32_t pos);
     };
 
     class RAM: public Memory{
 		public:
-            void write(uint8_t pos, uint32_t val);
+            void write(uint32_t pos, uint8_t val);
 	};
 }
 
