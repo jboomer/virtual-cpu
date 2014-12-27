@@ -51,6 +51,7 @@ namespace vCPU{
             int r_rs();
             int r_rt();
             int r_rd();
+            int r_funct();
             int r_shamt();
             int r_func();
             int i_rs();

@@ -1,9 +1,10 @@
 #include "mipsproc.h"
-
+#include "mipsopcodes.h"
 
 //TODO: get opCode(), get rs etc. in private helper functies
 
 namespace vCPU{
+
     MIPSproc::MIPSproc(RAM *mem)
     {
         memory = mem;
@@ -11,7 +12,6 @@ namespace vCPU{
         ir = 0;
         pc = 0; //start address
         npc = 0; //next address
-
     }
 
     MIPSproc::~MIPSproc()
@@ -21,22 +21,24 @@ namespace vCPU{
 
     void MIPSproc::run()
     {
-        //while(not end of instructions)
-        //{
-        //  fetch()
-        //  decode()
-        //  execute()
-        //  mem_acces()
-        //  mem_writeback()
-        //}
+        while(!m_halt){
+            fetch();
+            decode();
+            execute();
+            mem_acces();
+            mem_writeback();
+        }
     }
 
     void MIPSproc::fetch(){
         pc = npc;
+        ir = 0;
+
         for (int i = 0; i < 4; i++)
         {
-            (ir >> (i * 8)) = memory->read(pc + i); // LSB eerst?
+            ir |= (memory->read(pc + i)) << (i * 8); // MSB eerst?
         }
+
         npc = pc + 4; //Gets overwritten for jumps and branches
     }
 
@@ -65,19 +67,67 @@ namespace vCPU{
 
     void MIPSproc::execute()
     {
-        //TODO: Alle acties in functies zetten
+				//TODO: Overflow
         emit process_cmd(ir);
 
         switch(opCode())
         {
-        case(OP_ALU):
+        case(OC_MFC0): //?
+        case(OC_ALU):
             switch(r_func()){
-            case(FUNCT_ADD):
-                //TODO: Overflow
+            case FUNCT_ADD:
                 regs[r_rd()] = ALUSrcA + ALUSrcB;
                 break;
+            case FUNCT_ADDU:
+            case FUNCT_AND:
+                regs[r_rd()] = ALUSrcA & ALUSrcB;
+            break;
+            case FUNCT_DIVU:
+            case FUNCT_DIV:
+                lo = ALUSrcA / ALUSrcB;
+                hi = ALUSrcA % ALUSrcB;
+                break;
+            case FUNCT_JR:
+                npc = ALUSrcA;
+                break;
+            case FUNCT_MFHI:
+                regs[r_rd()] = hi;
+                break;
+            case FUNCT_MFLO:
+                regs[r_rd()] = lo;
+                break;
+            case FUNCT_MULTU:
+            case FUNCT_MULT:
+                lo = ALUSrcA * ALUSrcB;
+                break;
+            case FUNCT_NOR:
+								regs[r_rd()] = ~(ALUSrcA | ALUSrcB);
+                break;
+            case FUNCT_OR:
+                regs[r_rd()] = ALUSrcA | ALUSrcB;
+                break;
+            case FUNCT_SLL:
+                regs[r_rd()] = ALUSrcB << r_shamt();
+                break;
+            case FUNCT_SLTU:
+            case FUNCT_SLT:
+                regs[r_rd()] = (ALUSrcA < ALUSrcB) ? 1 : 0;
+                break;
+            case FUNCT_SRA:
+                regs[r_rd()] = ALUSrcB >> r_shamt();
+            case FUNCT_SRL:
+                regs[r_rd()] = ALUSrcB >> ALUSrcA;
+                break;
+            case FUNCT_SUBU:
+            case FUNCT_SUB:
+                regs[r_rd()] = ALUSrcA - ALUSrcB;
+                break;
+            case FUNCT_XOR:
+                regs[r_rd()] =  ALUSrcA ^ ALUSrcB;
+                break;
+            default:
+                break;
             }
-
             break;
         case(OC_J):
             pc = npc;
@@ -113,10 +163,10 @@ namespace vCPU{
     {
         switch(opCode())
         {
-        case(OP_SB):
+        case(OC_SB):
             memory->write(regs[i_rs()] + i_imm(), regs[i_rt()] & 0xff);
             break;
-        case(OP_SW):
+        case(OC_SW):
             for (int i = 0; i < 4; i++)
             {
                 memory->write(regs[i_rs()] + i_imm() + i, (regs[i_rt()] >> i) & 0xff);
@@ -140,6 +190,11 @@ namespace vCPU{
     int MIPSproc::r_rt()
     {
         return ((ir >> R_RT) & 0x1f);
+    }
+
+    int MIPSproc::r_func()
+    {
+        return ((ir >> R_FUNC) & 0x3f);
     }
 
     int MIPSproc::r_rd()

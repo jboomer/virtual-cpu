@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdint.h>
 #include <QObject>
+#include <string>
 #include "virtualcpu.h"
 #include "ui_virtualcpu.h"
 #include "mipsproc.h"
@@ -19,12 +20,17 @@ VirtualCPU::VirtualCPU(QWidget *parent) :
     ui(new Ui::VirtualCPU)
 {
     ui->setupUi(this);
-    //Initialize Proc & RAM
+
+    myRAM = new RAM();
+
+    v_cpu = new MIPSproc(myRAM);
 
     //Connect signals & slots
 
     //Load test program into memory
+		// TEST PROGRAM
 }
+
 VirtualCPU::~VirtualCPU()
 {
     delete ui;
@@ -32,6 +38,7 @@ VirtualCPU::~VirtualCPU()
 
 void VirtualCPU::runProgram()
 {
+    fprintf(stdout, "RUNNING...");
     v_cpu->run();
 }
 
@@ -46,7 +53,7 @@ void VirtualCPU::receive_cpuOutput(int output)
     emit newOutput(output);
 }
 
-void VirtualCPU::receive_cpuCmd(int instr)
+void VirtualCPU::receive_cpuCmd(std::string cmd)
 {
-    // EMIT Instruction
+    emit newCmd(QString::QString(cmd));
 }
