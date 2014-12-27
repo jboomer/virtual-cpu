@@ -3,8 +3,9 @@
 
 #include <QString>
 #include <QMainWindow>
+#include <string>
 #include "memory.h"
-#include "cpu.h"
+#include "mipsproc.h"
 
 namespace Ui {
 class VirtualCPU;
@@ -19,7 +20,7 @@ public:
     ~VirtualCPU();
     
 private:
-    vCPU::CPU *v_cpu;
+    vCPU::MIPSproc *v_cpu;
     vCPU::RAM *myRAM;
 
     void runProgram();
@@ -30,7 +31,7 @@ signals:
 
 private slots:
     void on_runButton_clicked();
-    void receive_cpuOutput(int output);
+    void receive_cpuOutput(std::string cmd);
     void receive_cpuCmd(int opcode);
 private:
     Ui::VirtualCPU *ui;

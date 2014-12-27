@@ -15,12 +15,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         virtualcpu.cpp \
     memory.cpp \
-    cpu.cpp
+    mipsproc.cpp
 
 HEADERS  += virtualcpu.h \
-    opcodes.h \
     memory.h \
-    cpu.h \
-    mips.h
+    mipsproc.h \
+    mipsopcodes.h
 
 FORMS    += virtualcpu.ui
